@@ -49,4 +49,16 @@ public class InputFormItem extends JPanel{
 		this.initComponent();
 	}
 	
+	public void setContent(String text) {
+		this.text.setText(text);
+	}
+	
+	public String getContent() {
+		return(this.text.getText());
+	}
+	
+	public char[] getPwd() {
+		return(this.pass.getPassword());
+	}
+	
 }

@@ -23,6 +23,16 @@ public class Login extends JFrame{
 	JPanel inputForm, btnDangNhap;
 	JLabel lblTitle;
 	
+	public Login() {
+		img = new JLabel();
+		quenMK = new JLabel();
+		inputForm = new JPanel();
+		lblTitle = new JLabel();
+		btnDangNhap = new JPanel();
+		dangNhap = new JLabel();
+		this.initComponent();
+	}
+	
 	public void initComponent() {
 		this.setTitle("Đăng Nhập");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,7 +70,7 @@ public class Login extends JFrame{
 
             @Override
             public void mousePressed(MouseEvent evt) {
-
+            	pnlMousePress();
             }
 
             @Override
@@ -83,13 +93,9 @@ public class Login extends JFrame{
 		this.setLocationRelativeTo(null);
 	}
 	
-	public Login() {
-		img = new JLabel();
-		quenMK = new JLabel();
-		inputForm = new JPanel();
-		lblTitle = new JLabel();
-		btnDangNhap = new JPanel();
-		dangNhap = new JLabel();
-		this.initComponent();
+	public void pnlMousePress() {
+		this.dispose();
+		MainFrame mainFrame = new MainFrame();
+		mainFrame.setVisible(true);
 	}
 }

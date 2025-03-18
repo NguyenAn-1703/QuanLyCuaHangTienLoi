@@ -2,15 +2,19 @@ package GUI.Panel;
 
 import javax.swing.JPanel;
 
+import Components.FunctionBar;
+import Components.MenuTaskbar;
 import net.miginfocom.swing.MigLayout;
 
-public class TrangChu extends JPanel{
+public class TrangChuPnl extends JPanel{
+
+	
 	public void initComponent() {
 		this.setLayout(new MigLayout());
 
 	}
 	
-	public TrangChu() {
+	public TrangChuPnl() {
 		this.initComponent();
 	}
 }

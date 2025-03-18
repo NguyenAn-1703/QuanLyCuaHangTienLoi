@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="src/lib/flatlaf-3.5.4.jar"/>
 	<classpathentry kind="lib" path="src/lib/miglayout-3.7-swing-java14.jar"/>
 	<classpathentry kind="lib" path="src/lib/miglayout-swt-4.2-sources.jar"/>
+	<classpathentry kind="lib" path="src/lib/mysql-connector-java-8.0.18.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

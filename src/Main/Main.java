@@ -4,10 +4,14 @@ import javax.swing.*;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
+import config.JDBCUtil;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.sql.Connection;
+
 import javax.imageio.ImageIO;
 
 public class Main extends JPanel {
@@ -20,5 +24,6 @@ public class Main extends JPanel {
 		FlatIntelliJLaf.setup();
 		Login login = new Login();
 		login.setVisible(true);
+		
 	}
 }
