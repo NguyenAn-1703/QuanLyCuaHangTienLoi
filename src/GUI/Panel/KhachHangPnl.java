@@ -37,7 +37,8 @@ public class KhachHangPnl extends JPanel{
 		tableKhachHang = new JTable();
 		scrollPane = new JScrollPane();
 		model = new DefaultTableModel();
-		fnl = new FunctionKHListener(model);
+		khachHangBUS = KhachHangBUS.getInstance();
+		fnl = new FunctionKHListener(tableKhachHang, model, functionBar, mainFrame);
 		this.mainFrame = mainFrame;
 		
 		this.initComponent();
@@ -62,16 +63,19 @@ public class KhachHangPnl extends JPanel{
 		this.add(functionBar, "grow");
 		this.add(mainPnl, "grow");
 		
-		functionBar.getListButtons().get(1).addMouseListener(fnl);
-		functionBar.getListButtons().get(0).addMouseListener(new MouseAdapter() {
-				@Override
-				public void mousePressed(java.awt.event.MouseEvent e) {
-					new KhachHangDialog(mainFrame, "Nhập thông tin", model);
-				};
-				
-			}
-		);
+		for(int i = 0; i < functionBar.getListButtons().size(); i++) {
+			functionBar.getListButtons().get(i).addMouseListener(fnl);
+		}	
 		
+		loadDataTable();
+	}
+	
+	public void loadDataTable() {
+		model.setRowCount(0); //Xóa dữ liệu cũ
+		ArrayList<KhachHangDTO> listKH = khachHangBUS.getAll(); 
+		for(KhachHangDTO kh : listKH) {
+			model.addRow(new Object[] {kh.getiD(), kh.getTen(), kh.getSoDienThoai(), kh.getDiem()});
+		}
 	}
 	
 }

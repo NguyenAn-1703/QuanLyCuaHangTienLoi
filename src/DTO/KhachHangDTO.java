@@ -1,21 +1,23 @@
 package DTO;
 
+import java.math.BigDecimal;
+
 public class KhachHangDTO {
 	private int iD;
 	private String ten;
 	private String soDienThoai;
-	private int diem;
+	private BigDecimal diem;
 	
 	public KhachHangDTO() {}
 	
-	public KhachHangDTO(int iD, String ten, String soDienThoai, int diem) {
+	public KhachHangDTO(int iD, String ten, String soDienThoai, BigDecimal diem) {
 		this.iD = iD;
 		this.ten = ten;
 		this.soDienThoai = soDienThoai;
 		this.diem = diem;
 	}
 	
-	public KhachHangDTO(String ten, String soDienThoai, int diem) {
+	public KhachHangDTO(String ten, String soDienThoai, BigDecimal diem) {
 		this.ten = ten;
 		this.soDienThoai = soDienThoai;
 		this.diem = diem;
@@ -41,10 +43,13 @@ public class KhachHangDTO {
 	public void setSoDienThoai(String soDienThoai) {
 		this.soDienThoai = soDienThoai;
 	}
-	public int getDiem() {
+
+	public BigDecimal getDiem() {
 		return diem;
 	}
-	public void setDiem(int diem) {
+
+	public void setDiem(BigDecimal diem) {
 		this.diem = diem;
 	}
+	
 }

@@ -28,6 +28,25 @@ public class KhachHangBUS {
 		}
 	}
 	
+	public int update(KhachHangDTO khachMoi) {
+		if(khachHangDAO.update(khachMoi) > 0) {
+			int id = khachMoi.getiD();
+			listKH.get(getIndexByMaKH(id)).setTen(khachMoi.getTen());
+			listKH.get(getIndexByMaKH(id)).setSoDienThoai(khachMoi.getSoDienThoai());
+			listKH.get(getIndexByMaKH(id)).setDiem(khachMoi.getDiem());
+			return(1);
+		}
+		return(0);
+	}
+	
+	public int delete(int id) {
+		if(khachHangDAO.delete(id) > 0) {
+			listKH.remove(getIndexByMaKH(id));
+			return(1);
+		}
+		return(0);
+	}
+	
 	public ArrayList<KhachHangDTO> getAll(){
 		listKH = khachHangDAO.getAll();
 		return listKH;
@@ -39,6 +58,15 @@ public class KhachHangBUS {
 
 	public void setKhachHangDAO(KhachHangDAO khachHangDAO) {
 		this.khachHangDAO = khachHangDAO;
+	}
+	
+	public int getIndexByMaKH(int maKH) {
+		for(int i = 0; i < listKH.size(); i++) {
+			if(listKH.get(i).getiD() == maKH) {
+				return(i);
+			}
+		}
+		return(0);
 	}
 	
 }

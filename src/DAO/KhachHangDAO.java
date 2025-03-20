@@ -1,6 +1,8 @@
 package DAO;
 
 
+import java.math.BigDecimal;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,7 +35,7 @@ public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
 			PreparedStatement pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			pst.setString(1, t.getTen());
 			pst.setString(2, t.getSoDienThoai());
-			pst.setInt(3, t.getDiem());
+			pst.setBigDecimal(3, t.getDiem());
 			
 			rowInserted = pst.executeUpdate();
 			
@@ -51,18 +53,43 @@ public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
 
 	@Override
 	public int update(KhachHangDTO t) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		Connection con = JDBCUtil.getConnection();
+		String sql = "UPDATE KHACHHANG SET TENKH = ?, SODT = ?, DIEM = ? WHERE MAKH = ?";
+		try {
+			PreparedStatement pst = con.prepareStatement(sql);
+			pst.setString(1, t.getTen());
+			pst.setString(2, t.getSoDienThoai());
+			pst.setBigDecimal(3, t.getDiem());
+			pst.setInt(4, t.getiD());
+			result = pst.executeUpdate();
+			JDBCUtil.closeConnection(con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	@Override
-	public int delete(String id) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int delete(int id) {
+		int result = 0;
+		Connection con = JDBCUtil.getConnection();
+		String sql = "UPDATE KHACHHANG SET TRANGTHAI = 0 WHERE MAKH = ?";
+		try {
+			PreparedStatement pst = con.prepareStatement(sql);
+			pst.setInt(1, id);
+			result = pst.executeUpdate();
+			JDBCUtil.closeConnection(con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	@Override
-	public KhachHangDTO selectByID(String id) {
+	public KhachHangDTO selectByID(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -72,7 +99,7 @@ public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
 		Connection con = JDBCUtil.getConnection();
 		ArrayList<KhachHangDTO> result = new ArrayList<>();
 		
-		String sql = "SELECT * FROM KHACHHANG";
+		String sql = "SELECT * FROM KHACHHANG WHERE TRANGTHAI = 1";
 		try {
 			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
@@ -80,7 +107,7 @@ public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
 				int id = rs.getInt("MAKH");
 				String ten = rs.getString("TENKH"); 
 				String sdt = rs.getString("SODT");
-				int diem = rs.getInt("DIEM");
+				BigDecimal diem = rs.getBigDecimal("DIEM");
 				KhachHangDTO khach = new KhachHangDTO(id, ten, sdt, diem);
 				result.add(khach);
 			}
