@@ -1,17 +1,26 @@
 package Components;
 
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import GUI.Panel.KhachHangPnl;
+import GUI.Panel.NhanVienPnl;
+import Main.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 public class MenuTaskbar extends JPanel{
 	ArrayList<ItemTaskbar> listItem;
+	MainFrame mainFrame;
 	
-	public MenuTaskbar() {
+	public MenuTaskbar(MainFrame mainFrame) {
 		listItem = new ArrayList<>();
+		this.mainFrame = mainFrame;
 		this.initComponent();
 	}
 
@@ -32,5 +41,19 @@ public class MenuTaskbar extends JPanel{
 			listItem.add(itemTaskBar);
 			this.add(listItem.get(i), "grow");
 		}
+		
+		listItem.get(2).addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				mainFrame.setPnl(new KhachHangPnl(mainFrame));
+			}
+		});
+		
+		listItem.get(3).addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				mainFrame.setPnl(new NhanVienPnl(mainFrame));
+			}
+		});
 	}
 }

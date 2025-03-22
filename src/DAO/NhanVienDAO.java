@@ -11,31 +11,33 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.KhachHangDTO;
+import DTO.NhanVienDTO;
 import config.JDBCUtil;
 
-public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
-	private static KhachHangDAO instance;
+public class NhanVienDAO implements DAOInterface<NhanVienDTO>{
+	private static NhanVienDAO instance;
 	
 	// Constructor private không cho phép khởi tạo đối tượng từ bên ngoài
-	private KhachHangDAO() {}
+	private NhanVienDAO() {}
 	
-	public static KhachHangDAO getInstance() {
+	public static NhanVienDAO getInstance() {
 		if(instance == null) {
-			instance = new KhachHangDAO();
+			instance = new NhanVienDAO();
 		}
 		return instance;
 	}
 
 	@Override
-	public int insert(KhachHangDTO t) {
+	public int insert(NhanVienDTO t) {
 		Connection con = JDBCUtil.getConnection();
-		String sql = "INSERT INTO KHACHHANG (TENKH, SODT, DIEM) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO NHANVIEN (TENNV, GIOITINH, SODT, DIACHI) VALUES (?, ?, ?, ?)";
 		int rowInserted = 0;
 		try {
 			PreparedStatement pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			pst.setString(1, t.getTen());
-			pst.setString(2, t.getSoDienThoai());
-			pst.setBigDecimal(3, t.getDiem());
+			pst.setString(2, t.getGioiTinh());
+			pst.setString(3, t.getSoDT());
+			pst.setString(4, t.getDiaChi());
 			
 			rowInserted = pst.executeUpdate();
 			
@@ -52,16 +54,17 @@ public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
 	}
 
 	@Override
-	public int update(KhachHangDTO t) {
+	public int update(NhanVienDTO t) {
 		int result = 0;
 		Connection con = JDBCUtil.getConnection();
-		String sql = "UPDATE KHACHHANG SET TENKH = ?, SODT = ?, DIEM = ? WHERE MAKH = ?";
+		String sql = "UPDATE NHANVIEN SET TENNV = ?, GIOITINH = ?, SODT = ?, DIACHI = ? WHERE MANV = ?";
 		try {
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setString(1, t.getTen());
-			pst.setString(2, t.getSoDienThoai());
-			pst.setBigDecimal(3, t.getDiem());
-			pst.setInt(4, t.getiD());
+			pst.setString(2, t.getGioiTinh());
+			pst.setString(3, t.getSoDT());
+			pst.setString(4, t.getDiaChi());
+			pst.setInt(5, t.getiD());
 			result = pst.executeUpdate();
 			JDBCUtil.closeConnection(con);
 		} catch (SQLException e) {
@@ -75,7 +78,7 @@ public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
 	public int delete(int id) {
 		int result = 0;
 		Connection con = JDBCUtil.getConnection();
-		String sql = "UPDATE KHACHHANG SET TRANGTHAI = 0 WHERE MAKH = ?";
+		String sql = "UPDATE NHANVIEN SET TRANGTHAI = 0 WHERE MANV = ?";
 		try {
 			PreparedStatement pst = con.prepareStatement(sql);
 			pst.setInt(1, id);
@@ -89,27 +92,28 @@ public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
 	}
 
 	@Override
-	public KhachHangDTO selectByID(int id) {
+	public NhanVienDTO selectByID(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ArrayList<KhachHangDTO> getAll() {
+	public ArrayList<NhanVienDTO> getAll() {
 		Connection con = JDBCUtil.getConnection();
-		ArrayList<KhachHangDTO> result = new ArrayList<>();
+		ArrayList<NhanVienDTO> result = new ArrayList<>();
 		
-		String sql = "SELECT * FROM KHACHHANG WHERE TRANGTHAI = 1";
+		String sql = "SELECT * FROM NHANVIEN WHERE TRANGTHAI = 1";
 		try {
 			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
 			while(rs.next()) {
-				int id = rs.getInt("MAKH");
-				String ten = rs.getString("TENKH"); 
+				int id = rs.getInt("MANV");
+				String ten = rs.getString("TENNV"); 
+				String gioiTinh = rs.getString("GIOITINH");
 				String sdt = rs.getString("SODT");
-				BigDecimal diem = rs.getBigDecimal("DIEM");
-				KhachHangDTO khach = new KhachHangDTO(id, ten, sdt, diem);
-				result.add(khach);
+				String diaChi = rs.getString("DIACHI");
+				NhanVienDTO nhanVien = new NhanVienDTO(id, ten, gioiTinh, sdt, diaChi);
+				result.add(nhanVien);
 			}
 			JDBCUtil.closeConnection(con);
 		} catch (SQLException e) {
@@ -117,10 +121,4 @@ public class KhachHangDAO implements DAOInterface<KhachHangDTO>{
 		}
 		return result;
 	}
-
-
-	
-	
-	
-
 }

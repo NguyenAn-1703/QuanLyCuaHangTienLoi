@@ -13,38 +13,41 @@ import javax.swing.table.DefaultTableModel;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import BUS.KhachHangBUS;
+import BUS.NhanVienBUS;
 import Components.Function;
 import Components.FunctionBar;
 import Components.SearchBar;
 import DTO.KhachHangDTO;
+import DTO.NhanVienDTO;
 import GUI.Dialog.KhachHangDialog;
 import GUI.Listener.FunctionKHListener;
+import GUI.Listener.FunctionNVListener;
 import net.miginfocom.swing.MigLayout;
 
-public class KhachHangPnl extends JPanel{
+public class NhanVienPnl extends JPanel{
 	private FunctionBar functionBar;
 	private SearchBar searchBar;
-	private String[] filter = {"Tất cả","Số điện thoại", "Tên", "Mã", "Điểm"};
+	private String[] filter = {"Tất cả","Số điện thoại","Tên","Mã","Địa chỉ"};
 	private JPanel topPanel;
 	private JPanel mainPnl;
-	private JTable tableKhachHang;
+	private JTable tableNhanVien;
 	private JScrollPane scrollPane;
 	private DefaultTableModel model;
-	private String[] headerTable = {"Mã khách hàng","Tên khách hàng","Số điện thoại","Điểm"};
-	private KhachHangBUS khachHangBUS;
-	private FunctionKHListener fnl;
+	private String[] headerTable = {"Mã nhân viên","Tên nhân viên","Giới tính","Số điện thoại","Địa chỉ"};
+	private NhanVienBUS nhanVienBUS;
+	private FunctionNVListener fnl;
 	private JFrame mainFrame;
 	
-	public KhachHangPnl(JFrame mainFrame) {
+	public NhanVienPnl(JFrame mainFrame) {
 		functionBar = new FunctionBar();
 		searchBar = new SearchBar(filter);
 		topPanel = new JPanel();
 		mainPnl = new JPanel();
-		tableKhachHang = new JTable();
+		tableNhanVien = new JTable();
 		scrollPane = new JScrollPane();
 		model = new DefaultTableModel();
-		khachHangBUS = KhachHangBUS.getInstance();
-		fnl = new FunctionKHListener(this);
+		nhanVienBUS = NhanVienBUS.getInstance();
+		fnl = new FunctionNVListener(this);
 		this.mainFrame = mainFrame;
 		
 		this.initComponent();
@@ -58,11 +61,11 @@ public class KhachHangPnl extends JPanel{
 		this.mainPnl.putClientProperty(FlatClientProperties.STYLE, "arc:10; background:#EEEEEE");
 		
 		model.setColumnIdentifiers(headerTable);
-		tableKhachHang.setModel(model);
-		tableKhachHang.setFocusable(false);
-		tableKhachHang.getTableHeader().setReorderingAllowed(false);
-		tableKhachHang.setDefaultEditor(Object.class, null);
-		scrollPane.setViewportView(tableKhachHang);
+		tableNhanVien.setModel(model);
+		tableNhanVien.setFocusable(false);
+		tableNhanVien.getTableHeader().setReorderingAllowed(false);
+		tableNhanVien.setDefaultEditor(Object.class, null);
+		scrollPane.setViewportView(tableNhanVien);
 		
 		topPanel.add(functionBar, "skip");
 		topPanel.add(searchBar);
@@ -79,13 +82,13 @@ public class KhachHangPnl extends JPanel{
 		
 		searchBar.getComboBox().addItemListener(fnl);
 		searchBar.getTextFieldSearch().addKeyListener(fnl);
-		loadDataTable(khachHangBUS.getAll());
+		loadDataTable(nhanVienBUS.getAll());
 	}
 	
-	public void loadDataTable(ArrayList<KhachHangDTO> list) {
+	public void loadDataTable(ArrayList<NhanVienDTO> list) {
 		model.setRowCount(0); //Xóa dữ liệu cũ
-		for(KhachHangDTO kh : list) {
-			model.addRow(new Object[] {kh.getiD(), kh.getTen(), kh.getSoDienThoai(), kh.getDiem()});
+		for(NhanVienDTO nv : list) {
+			model.addRow(new Object[] {nv.getiD(), nv.getTen(), nv.getGioiTinh(), nv.getSoDT(), nv.getDiaChi()});
 		}
 	}
 
@@ -121,12 +124,12 @@ public class KhachHangPnl extends JPanel{
 		this.mainPnl = mainPnl;
 	}
 
-	public JTable getTableKhachHang() {
-		return tableKhachHang;
+	public JTable getTableNhanVien() {
+		return tableNhanVien;
 	}
 
-	public void setTableKhachHang(JTable tableKhachHang) {
-		this.tableKhachHang = tableKhachHang;
+	public void setTableNhanVien(JTable tableNhanVien) {
+		this.tableNhanVien = tableNhanVien;
 	}
 
 	public JScrollPane getScrollPane() {
@@ -153,19 +156,19 @@ public class KhachHangPnl extends JPanel{
 		this.headerTable = headerTable;
 	}
 
-	public KhachHangBUS getKhachHangBUS() {
-		return khachHangBUS;
+	public NhanVienBUS getNhanVienBUS() {
+		return nhanVienBUS;
 	}
 
-	public void setKhachHangBUS(KhachHangBUS khachHangBUS) {
-		this.khachHangBUS = khachHangBUS;
+	public void setKhachHangBUS(NhanVienBUS nhanVienBUS) {
+		this.nhanVienBUS = nhanVienBUS;
 	}
 
-	public FunctionKHListener getFnl() {
+	public FunctionNVListener getFnl() {
 		return fnl;
 	}
 
-	public void setFnl(FunctionKHListener fnl) {
+	public void setFnl(FunctionNVListener fnl) {
 		this.fnl = fnl;
 	}
 

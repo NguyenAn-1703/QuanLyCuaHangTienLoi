@@ -20,22 +20,24 @@ import javax.swing.table.DefaultTableModel;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import BUS.KhachHangBUS;
+import BUS.NhanVienBUS;
 import BUS.Validation;
 import Components.InputFormItem;
 import DTO.KhachHangDTO;
+import DTO.NhanVienDTO;
 import net.miginfocom.swing.MigLayout;
 
-public class KhachHangDialog extends JDialog{
+public class NhanVienDialog extends JDialog{
 	ArrayList<InputFormItem> listIFI;
-	String[] listItem = {"Tên","Số điện thoại","Điểm"};
+	String[] listItem = {"Tên","Giới tính","Số điện thoại","Địa chỉ"};
 	JButton btnThem, btnHuy, btnCapNhat;
 	JFrame owner;
-	KhachHangBUS khachHangBUS = KhachHangBUS.getInstance();
+	NhanVienBUS nhanVienBUS = NhanVienBUS.getInstance();
 	DefaultTableModel model;
 	JTable table;
 	String type; //loại: update, insert, view
 	
-	public KhachHangDialog(JFrame owner, String title, DefaultTableModel model, JTable table, String type) {
+	public NhanVienDialog(JFrame owner, String title, DefaultTableModel model, JTable table, String type) {
 		super(owner, title, true);
 		this.owner = owner;
 		this.model = model;
@@ -53,15 +55,14 @@ public class KhachHangDialog extends JDialog{
 		this.getContentPane().setBackground(Color.white);
 		JLabel title = new JLabel();
 		if(type.equals("update")) {
-			title.setText("Sửa Thông Tin Khách Hàng");
+			title.setText("Sửa Thông Tin Nhân Viên");
 		}
 		else if(type.equals("insert")) {
-			title.setText("Thêm Khách Hàng");
+			title.setText("Thêm Nhân Viên");
 		}
 		else {
-			title.setText("Thông Tin Khách Hàng");
+			title.setText("Thông Tin Nhân Viên");
 		}
-		
 		
 		title.setFont(new Font("Segoe UI", Font.BOLD, 17));
 		title.setForeground(Color.decode("#213862"));
@@ -86,10 +87,11 @@ public class KhachHangDialog extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 					//Lấy dữ liệu string
 					String ten = listIFI.get(0).getContent();
-					String soDT = listIFI.get(1).getContent();
-					String diemString = listIFI.get(2).getContent();
+					String gioiTinh = listIFI.get(1).getContent();
+					String soDT = listIFI.get(2).getContent();
+					String diaChi = listIFI.get(3).getContent();
 					//Kiểm tra dữ liệu
-					if(ValidateKhachHang(ten, soDT, diemString)) {
+					if(ValidateNhanVien(ten, gioiTinh, soDT, diaChi)) {
 						insert();
 					}
 				}
@@ -102,10 +104,11 @@ public class KhachHangDialog extends JDialog{
 				int id = (int)model.getValueAt(selectedRow, 0);
 				//Lấy dữ liệu mới đã sửa
 				String ten = listIFI.get(0).getContent();
-				String soDT = listIFI.get(1).getContent();
-				String diemString = listIFI.get(2).getContent();
+				String gioiTinh = listIFI.get(1).getContent();
+				String soDT = listIFI.get(2).getContent();
+				String diaChi = listIFI.get(3).getContent();
 				
-				if(ValidateKhachHang(ten, soDT, diemString)) {
+				if(ValidateNhanVien(ten, gioiTinh, soDT, diaChi)) {
 					update();
 				}
 				
@@ -124,12 +127,14 @@ public class KhachHangDialog extends JDialog{
 			//thêm nút cập nhật
 			int selectedRow = table.getSelectedRow();
 			String ten = (String)model.getValueAt(selectedRow, 1);
-			String soDT = (String)model.getValueAt(selectedRow, 2);
-			BigDecimal diem = (BigDecimal)model.getValueAt(selectedRow, 3);
+			String gioiTinh = (String)model.getValueAt(selectedRow, 2);
+			String soDT = (String)model.getValueAt(selectedRow, 3);
+			String diaChi = (String)model.getValueAt(selectedRow, 4);
 			
 			listIFI.get(0).setContent(ten);
-			listIFI.get(1).setContent(soDT);
-			listIFI.get(2).setContent(diem + "");
+			listIFI.get(1).setContent(gioiTinh);
+			listIFI.get(2).setContent(soDT);
+			listIFI.get(3).setContent(diaChi);
 			this.add(btnCapNhat, "gaptop 20");
 			// Thêm nút hủy
 			this.add(btnHuy);
@@ -143,12 +148,15 @@ public class KhachHangDialog extends JDialog{
 		else if(type.equals("view")) {
 			int selectedRow = table.getSelectedRow();
 			String ten = (String)model.getValueAt(selectedRow, 1);
-			String soDT = (String)model.getValueAt(selectedRow, 2);
-			BigDecimal diem = (BigDecimal)model.getValueAt(selectedRow, 3);
+			String gioiTinh = (String)model.getValueAt(selectedRow, 2);
+			String soDT = (String)model.getValueAt(selectedRow, 3);
+			String diaChi = (String)model.getValueAt(selectedRow, 4);
 			
 			listIFI.get(0).setContent(ten);
-			listIFI.get(1).setContent(soDT);
-			listIFI.get(2).setContent(diem + "");
+			listIFI.get(1).setContent(gioiTinh);
+			listIFI.get(2).setContent(soDT);
+			listIFI.get(3).setContent(diaChi);
+			
 			for(InputFormItem i : listIFI) {
 				//lấy textField
 				i.getText().setFocusable(false);
@@ -167,15 +175,18 @@ public class KhachHangDialog extends JDialog{
 	
 	public void insert() {
 		String ten = listIFI.get(0).getContent();
-		String soDT = listIFI.get(1).getContent();
-		String diemString = listIFI.get(2).getContent();
-			
-		BigDecimal diem = BigDecimal.valueOf(Double.parseDouble(listIFI.get(2).getContent()));
+		String gioiTinh = listIFI.get(1).getContent();
+		String soDT = listIFI.get(2).getContent();
+		String diaChi = listIFI.get(3).getContent();
 		
-		KhachHangDTO khach = new KhachHangDTO(ten, soDT, diem);
-		khachHangBUS.insert(khach);
-		
-		model.addRow(new Object[] {khach.getiD(), khach.getTen(), khach.getSoDienThoai(), khach.getDiem()});
+		NhanVienDTO nhanVien = new NhanVienDTO(ten, gioiTinh, soDT, diaChi);
+		if(nhanVienBUS.insert(nhanVien) != 0) {
+			JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công");
+			model.addRow(new Object[] {nhanVien.getiD(), nhanVien.getTen(), nhanVien.getGioiTinh(), nhanVien.getSoDT(), nhanVien.getDiaChi()});
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Thêm nhân viên thất bại");
+		}
 		dispose();
 	}
 	
@@ -189,19 +200,19 @@ public class KhachHangDialog extends JDialog{
 		int id = (int)model.getValueAt(selectedRow, 0);
 		//Lấy dữ liệu mới đã sửa
 		String ten = listIFI.get(0).getContent();
-		String soDT = listIFI.get(1).getContent();
-		String diemString = listIFI.get(2).getContent();
+		String gioiTinh = listIFI.get(1).getContent();
+		String soDT = listIFI.get(2).getContent();
+		String diaChi = listIFI.get(3).getContent();
 		
-		int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn sửa thông tin khách hàng này ?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-		if(confirm == JOptionPane.YES_OPTION) {
-			BigDecimal diem = BigDecimal.valueOf(Double.parseDouble(diemString));
-			
-			KhachHangDTO khachHangDTO = new KhachHangDTO(id, ten, soDT, diem);
-			if(khachHangBUS.update(khachHangDTO) != 0) {
+		int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn sửa thông tin nhân viên này ?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+		if(confirm == JOptionPane.YES_OPTION) {	
+			NhanVienDTO nhanVienDTO = new NhanVienDTO(id, ten, gioiTinh, soDT, diaChi);
+			if(nhanVienBUS.update(nhanVienDTO) != 0) {
 				model.setValueAt(id, selectedRow, 0);
 				model.setValueAt(ten, selectedRow, 1);
-				model.setValueAt(soDT, selectedRow, 2);
-				model.setValueAt(diem, selectedRow, 3);
+				model.setValueAt(gioiTinh, selectedRow, 2);
+				model.setValueAt(soDT, selectedRow, 3);
+				model.setValueAt(diaChi, selectedRow, 4);
 				JOptionPane.showMessageDialog(null, "Sửa thông tin thành công");
 				dispose();
 			}
@@ -212,27 +223,28 @@ public class KhachHangDialog extends JDialog{
 		}
 	}
 	
-	public boolean ValidateKhachHang(String ten, String soDT, String diem) {
+	public boolean ValidateNhanVien(String ten, String gioiTinh, String soDT, String diaChi) {
 		if(Validation.isEmpty(ten)) {
-			JOptionPane.showMessageDialog(null, "Tên khách hàng không được để trống");
+			JOptionPane.showMessageDialog(null, "Tên nhân viên không được để trống");
+			return(false);
+		}
+		else if(Validation.isEmpty(gioiTinh)) {
+			JOptionPane.showMessageDialog(null, "Giới tính nhân viên không được để trống");
 			return(false);
 		}
 		else if(Validation.isEmpty(soDT)) {
-			JOptionPane.showMessageDialog(null, "Số điện thoại khách hàng không được để trống");
+			JOptionPane.showMessageDialog(null, "Số điện thoại nhân viên không được để trống");
 			return(false);
 		}
 		else if(!Validation.isPhoneNumber(soDT)) {
-			JOptionPane.showMessageDialog(null, "Số điện thoại khách hàng phải nhập đúng định dạng");
+			JOptionPane.showMessageDialog(null, "Số điện thoại nhân viên phải đúng định dạng");
 			return(false);
 		}
-		else if(Validation.isEmpty(diem)) {
-			JOptionPane.showMessageDialog(null, "Điểm khách hàng không được để trống");
+		else if(Validation.isEmpty(diaChi)) {
+			JOptionPane.showMessageDialog(null, "Địa chỉ không được để trống");
 			return(false);
 		}
-		else if(!Validation.isPositiveNumber(diem)) {
-			JOptionPane.showMessageDialog(null, "Điểm khách hàng phải là số dương");
-			return(false);
-		}
+
 		return(true);
 	}
 	

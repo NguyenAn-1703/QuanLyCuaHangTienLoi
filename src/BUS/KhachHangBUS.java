@@ -47,6 +47,51 @@ public class KhachHangBUS {
 		return(0);
 	}
 	
+	public ArrayList<KhachHangDTO> search(String content, String choice) {
+		content = content.toLowerCase();
+		ArrayList<KhachHangDTO> result = new ArrayList<>();
+		if(content.equals("")) {
+			return(listKH);
+		}
+		else if(choice.equals("Tất cả")) {
+			for(int i = 0; i < listKH.size(); i++) {
+				if(listKH.get(i).getSoDienThoai().contains(content) || listKH.get(i).getTen().toLowerCase().contains(content)
+					|| (listKH.get(i).getiD() + "").contains(content) || (listKH.get(i).getDiem() + "").contains(content)){
+					result.add(listKH.get(i));
+				}
+			}
+		}
+		else if(choice.equals("Số điện thoại")) {
+			for(int i = 0; i < listKH.size(); i++) {
+				if(listKH.get(i).getSoDienThoai().contains(content)){
+					result.add(listKH.get(i));
+				}
+			}
+		}
+		else if(choice.equals("Tên")) {
+			for(int i = 0; i < listKH.size(); i++) {
+				if(listKH.get(i).getTen().toLowerCase().contains(content)){
+					result.add(listKH.get(i));
+				}
+			}
+		}
+		else if(choice.equals("Mã")) {
+			for(int i = 0; i < listKH.size(); i++) {
+				if((listKH.get(i).getiD() + "").contains(content)){
+					result.add(listKH.get(i));
+				}
+			}
+		}
+		else if(choice.equals("Điểm")) {
+			for(int i = 0; i < listKH.size(); i++) {
+				if((listKH.get(i).getDiem() + "").contains(content)){
+					result.add(listKH.get(i));
+				}
+			}
+		}
+		return(result);
+	}
+	
 	public ArrayList<KhachHangDTO> getAll(){
 		listKH = khachHangDAO.getAll();
 		return listKH;
@@ -60,13 +105,14 @@ public class KhachHangBUS {
 		this.khachHangDAO = khachHangDAO;
 	}
 	
+	//Cho chức năng sửa, xóa
 	public int getIndexByMaKH(int maKH) {
 		for(int i = 0; i < listKH.size(); i++) {
 			if(listKH.get(i).getiD() == maKH) {
 				return(i);
 			}
 		}
-		return(0);
+		return(-1);
 	}
 	
 }

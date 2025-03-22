@@ -15,16 +15,16 @@ import GUI.Panel.KhachHangPnl;
 import net.miginfocom.swing.MigLayout;
 
 public class MainFrame extends JFrame{
-	JPanel leftPanel, topPanel, mainPanel;
+	JPanel leftPanel, mainPnl;
 	JLabel avatar, tenNguoiDung;
 	MenuTaskbar menuTaskBar;
 	
 	public MainFrame() {
 		String[] tk = {"src/img/icons8-avatar-100.png", "Nguyễn Ân"};
 		leftPanel = new JPanel();
-		topPanel = new JPanel();
-		mainPanel = new JPanel();
-		menuTaskBar = new MenuTaskbar();
+		mainPnl = new JPanel();
+		mainPnl.setLayout(new MigLayout("wrap 1, insets 0"));
+		menuTaskBar = new MenuTaskbar(this);
 		menuTaskBar.setBackground(Color.decode("#1C2743"));
 		menuTaskBar.putClientProperty(FlatClientProperties.STYLE, "arc : 10");
 		
@@ -51,16 +51,19 @@ public class MainFrame extends JFrame{
 		leftPanel.add(tenNguoiDung, "center");
 		leftPanel.add(menuTaskBar, "pushy, growy");
 		this.add(leftPanel, "pushy, growy");
+		this.add(mainPnl, "grow");
 		
-		this.setPnl();
+		this.setPnl(new KhachHangPnl(this));
 		
 		this.setSize(1200, 800);
 		this.setLocationRelativeTo(null);
 	}
 	
-	public void setPnl() {
-		KhachHangPnl khachHangPnl = new KhachHangPnl(this);
-		this.add(khachHangPnl, "grow");
+	public void setPnl(JPanel pnl) {
+		mainPnl.removeAll();
+		mainPnl.add(pnl, "push, grow");
+		mainPnl.repaint();
+		mainPnl.validate();
 	}
 	
 }
